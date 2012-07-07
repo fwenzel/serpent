@@ -1,1 +1,6 @@
-@import url('html5-boilerplate.css')
+@import url('html5-boilerplate.css');
+
+canvas {
+    border: 15px solid #777;
+    background-color: #efefef;
+}
