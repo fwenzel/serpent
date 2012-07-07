@@ -60,6 +60,7 @@ require(['jquery', 'utils'], function($, utils) {
     this.path = [{x: game.width / 2, y: game.height / 2}]; // Track snake's movement
 
     this.since_last_update = 0; // Time since last update
+    this.dirchange = false; // direction change in progress?
   }
   Snake.prototype.in_path = function(pos) {
     // Is this position somewhere in our path already?
@@ -73,7 +74,7 @@ require(['jquery', 'utils'], function($, utils) {
 
   // Foodz
   function Food() {
-    this.ttl = 45; // Food time to live.
+    this.ttl = 60; // Food time to live.
     this.val = 5; // Growth value for snake when eaten.
 
     do {
@@ -96,8 +97,8 @@ require(['jquery', 'utils'], function($, utils) {
       return;
     }
 
-    // No other commands while paused.
-    if (game.paused) return;
+    // No other commands while paused or while direction change already in progress.
+    if (game.paused || snake.dirchange) return;
 
     // Handle direction changes.
     if (!(e.keyCode in dirs)) return;
@@ -108,6 +109,7 @@ require(['jquery', 'utils'], function($, utils) {
     if (dirs[e.keyCode] == opposites[snake.dir]) return;
 
     // Change direction of snake
+    snake.dirchange = true;
     snake.dir = dirs[e.keyCode];
   }, false);
 
@@ -172,6 +174,8 @@ require(['jquery', 'utils'], function($, utils) {
       snake.path.shift();
     }
 
+    // Allow next direction change.
+    snake.dirchange = false;
   };
 
 
