@@ -1,5 +1,9 @@
 @import url('html5-boilerplate.css');
 
+h2 {
+    font-size: 90%;
+}
+
 canvas {
     border: 15px solid #777;
     background-color: #efefef;
