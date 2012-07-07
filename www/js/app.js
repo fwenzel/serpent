@@ -134,7 +134,7 @@ require(['jquery', 'utils'], function($, utils) {
     food = food.filter(function(item) { return item.ttl > 0; })
 
     // Add some food? (nom). But no more than 3.
-    if (food.length < 3 && Math.random() < .08) {
+    if (food.length < 3 && Math.random() < (.08 / (food.length + 1))) {
       food.push(new Food());
     }
 
@@ -184,10 +184,19 @@ require(['jquery', 'utils'], function($, utils) {
     for (var i in food) food[i].render();
 
     // Draw snake
-    ctx.fillStyle = "rgb(200,0,0)";
+    ctx.fillStyle = "rgb(200, 0, 0)";
     for (var i in snake.path) {
       ctx.fillRect(snake.path[i].x * blocksize, snake.path[i].y * blocksize,
                    blocksize, blocksize);
+    }
+
+    // Pause message?
+    if (game.paused) {
+      ctx.fillStyle = "rgb(0, 0, 0)";
+      ctx.font = "bold 24px Helvetica";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("PAUSE", canvas.width / 2, canvas.height / 2);
     }
   };
 
@@ -196,7 +205,6 @@ require(['jquery', 'utils'], function($, utils) {
   function pause(force) {
     if (animationFrameId || force) { // Pause
       game.paused = true;
-      cancelAnimationFrame(animationFrameId);
       animationFrameId = null;
     } else { // Unpause
       game.paused = false;
