@@ -3,7 +3,7 @@ require.config({
 });
 var global = this;
 
-require(['jquery'], function($) {
+require(['jquery', 'utils'], function($, utils) {
   // Setup requestAnimationFrame
   requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
                           window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
@@ -17,8 +17,24 @@ require(['jquery'], function($) {
     width: 32,
     height: 32,
     // Paused?
-    paused: false
+    paused: false,
+    // Assets
+    images_toload: {
+      food: 'img/apple.png'
+    },
+    images: {} // loaded
   };
+
+  // Load assets
+  for (var i in game.images_toload) {
+    var thisimg = i;
+    var img = new Image();
+    img.onload = function() {
+      delete game.images_toload[thisimg];
+      game.images[thisimg] = img;
+    };
+    img.src = game.images_toload[thisimg];
+  }
 
   // Create the canvas
   var canvas = document.createElement("canvas");
@@ -26,14 +42,6 @@ require(['jquery'], function($) {
   canvas.width = game.width * blocksize;
   canvas.height = game.height * blocksize;
   document.getElementById('game').appendChild(canvas);
-
-  // Background image
-  var bgReady = false;
-  var bgImage = new Image();
-  bgImage.onload = function () {
-    bgReady = true;
-  };
-  bgImage.src = "img/background.png";
 
   // Directions
   var dirs = {
@@ -44,8 +52,9 @@ require(['jquery'], function($) {
   };
 
   // Game objects
+  // Player
   function Snake() {
-    this.speed = 3; // movement in blocks per second
+    this.speed = 5; // movement in blocks per second
     this.length = 8; // snake length
     this.dir = 2; // direction
     this.path = [{x: game.width / 2, y: game.height / 2}]; // Track snake's movement
@@ -61,6 +70,22 @@ require(['jquery'], function($) {
     return false;
   }
   var snake = new Snake();
+
+  // Foodz
+  function Food() {
+    this.ttl = 45; // Food time to live.
+    this.val = 5; // Growth value for snake when eaten.
+
+    do {
+      this.x = utils.getRandomInt(0, game.width - 1);
+      this.y = utils.getRandomInt(0, game.height - 1);
+    } while (snake.in_path(this));
+  }
+  Food.prototype.render = function() {
+    if (!('food' in game.images)) return;
+    ctx.drawImage(game.images['food'], this.x * blocksize, this.y * blocksize);
+  }
+  var food = []; // List of food items on the screen.
 
 
   // Handle keyboard controls
@@ -90,6 +115,7 @@ require(['jquery'], function($) {
   // Reset game to original state
   function reset() {
     snake = new Snake();
+    food = [];
   };
 
 
@@ -100,6 +126,17 @@ require(['jquery'], function($) {
 
     // Update due
     snake.since_last_update -= 1000 / snake.speed;
+
+    // Age all food items, remove "expired" ones.
+    for (var i in food) {
+      food[i].ttl -= 1;
+    }
+    food = food.filter(function(item) { return item.ttl > 0; })
+
+    // Add some food? (nom). But no more than 3.
+    if (food.length < 3 && Math.random() < .08) {
+      food.push(new Food());
+    }
 
     // Calculate new snake position.
     var old_pos = snake.path[snake.path.length - 1];
@@ -120,6 +157,15 @@ require(['jquery'], function($) {
       return;
     }
 
+    // Nom nom nom
+    for (var i in food) {
+      if (food[i].x == new_pos.x && food[i].y == new_pos.y) {
+        snake.length += food[i].val;
+        food.splice(i, 1); // Remove this.
+        break;
+      }
+    }
+
     // Add new position to path, crop tail if snake length has been reached.
     snake.path.push(new_pos);
     if (snake.path.length > snake.length) {
@@ -133,6 +179,9 @@ require(['jquery'], function($) {
   function render() {
     // Empty the canvas.
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw food items
+    for (var i in food) food[i].render();
 
     // Draw snake
     ctx.fillStyle = "rgb(200,0,0)";
@@ -156,7 +205,7 @@ require(['jquery'], function($) {
     }
   };
   // Pause when leaving the screen.
-  window.addEventListener('blur', function() {pause(true)});
+  window.addEventListener('blur', function() { pause(true); });
 
 
   // The main game loop
