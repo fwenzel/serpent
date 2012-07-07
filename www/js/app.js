@@ -40,12 +40,13 @@ require(['jquery'], function($) {
 
   // Game objects
   function Snake() {
-    this.speed = 2.5; // movement in blocks per second
+    this.speed = 3; // movement in blocks per second
     this.length = 8; // snake length
     this.dir = 2; // direction
     this.path = [{x: grid.width / 2, y: grid.height / 2}]; // Track snake's movement
   }
   Snake.prototype.in_path = function(pos) {
+    // Is this position somewhere in our path already?
     for (var i in this.path) {
       var p = this.path[i];
       if (pos.x == p.x && pos.y == p.y) return true;
@@ -54,18 +55,17 @@ require(['jquery'], function($) {
   }
   var snake = new Snake();
 
+
   // Handle keyboard controls
-  var keysDown = {};
-
   addEventListener("keydown", function (e) {
-    // Change direction of snake
-    if (e.keyCode in dirs) {
-      snake.dir = dirs[e.keyCode];
-    }
-  }, false);
+    if (!(e.keyCode in dirs)) return;
 
-  addEventListener("keyup", function (e) {
-    delete keysDown[e.keyCode];
+    // Avoid opposite directions
+    var opposites = {1: 3, 2: 4, 3: 1, 4: 2};
+    if (dirs[e.keyCode] == opposites[snake.dir]) return;
+
+    // Change direction of snake
+    snake.dir = dirs[e.keyCode];
   }, false);
 
   // Reset game to original state
