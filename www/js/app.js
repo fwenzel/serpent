@@ -17,25 +17,8 @@ require(['jquery', 'assets', 'utils'], function($, assets, utils) {
     width: 32,
     height: 32,
     // Paused?
-    paused: false,
-    // Assets
-    images_toload: {
-      food: 'img/apple.png'
-    },
-    images: {} // loaded
+    paused: false
   };
-
-  // Load assets
-  for (var i in game.images_toload) {
-    var thisimg = i;
-    var img = new Image();
-    img.onload = function() {
-      game.images[thisimg] = this;
-      delete game.images_toload[thisimg];
-    };
-    img.src = game.images_toload[thisimg];
-    game.images_toload[thisimg] = img;
-  }
 
   // Create the canvas
   var canvas = document.createElement("canvas");
@@ -76,8 +59,8 @@ require(['jquery', 'assets', 'utils'], function($, assets, utils) {
     } while (is_collision(this));
   }
   Food.prototype.render = function() {
-    if (!('food' in game.images)) return;
-    ctx.drawImage(game.images['food'], this.x * blocksize, this.y * blocksize);
+    if (!('loaded' in assets.images['food'])) return;
+    ctx.drawImage(assets.images['food'].img, this.x * blocksize, this.y * blocksize);
   }
   var food = []; // List of food items on the screen.
 
