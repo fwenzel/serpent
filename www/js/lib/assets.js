@@ -9,7 +9,12 @@ define(function() {
     dir: 3,
     points: 25
   }, {
-    src: 'img/level3.png'
+    src: 'img/level3.png',
+    points: 35
+  }, {
+    src: 'img/level4.png',
+    start: {x: 20, y: 20},
+    dir: 1
   }];
   var images = {
     food: {src: 'img/apple.png'}

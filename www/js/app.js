@@ -143,6 +143,9 @@ require(['jquery', 'assets', 'utils'], function($, assets, utils) {
       case 3: new_pos.y += 1; break;
       case 4: new_pos.x -= 1; break;
     }
+    // Normalize values (allows teleporting across sides)
+    new_pos.x = (new_pos.x + game.width) % game.width;
+    new_pos.y = (new_pos.y + game.height) % game.height;
 
     // Did we run into a wall or ourselves?
     if (is_collision(new_pos)) {
