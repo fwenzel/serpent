@@ -17,7 +17,8 @@ define(function() {
     dir: 1
   }];
   var images = {
-    food: {src: 'img/apple.png'}
+    food: {src: 'img/apple.png'},
+    snake: {src: 'img/snake.png'}
   };
 
 

@@ -45,6 +45,7 @@ require(['jquery', 'assets', 'utils'], function($, assets, utils) {
     this.length = 8; // snake length
     this.dir = level.dir || 2; // direction
     this.path = [level.start || {x: game.width / 2, y: game.height / 2}]; // Track snake's movement
+    this.lives = (snake === undefined || !snake) ? 3 : snake.lives; // 3 lives by default.
 
     this.since_last_update = 0; // Time since last update
     this.dirchange = false; // direction change in progress?
@@ -149,7 +150,12 @@ require(['jquery', 'assets', 'utils'], function($, assets, utils) {
 
     // Did we run into a wall or ourselves?
     if (is_collision(new_pos)) {
-      console.log('zomg');
+      snake.lives -= 1;
+      if (snake.lives == 0) {
+        // Game over!
+        game.levelidx = 0;
+        snake = null;
+      }
       reset();
       return;
     }
@@ -195,6 +201,17 @@ require(['jquery', 'assets', 'utils'], function($, assets, utils) {
       }
     }
 
+    // Draw remaining lives.
+    if ('loaded' in assets.images['snake']) {
+      ctx.globalAlpha = 0.5;
+      for (var i = 0; i < snake.lives; i++) {
+        ctx.drawImage(assets.images['snake'].img,
+                      canvas.width - blocksize - (i + 1) * 1.2 * assets.images['snake'].img.width,
+                      canvas.height - assets.images['snake'].img.height - blocksize - 5);
+      }
+      ctx.globalAlpha = 1;
+    }
+
     // Draw food items
     for (var i in food) food[i].render();
 
@@ -204,6 +221,14 @@ require(['jquery', 'assets', 'utils'], function($, assets, utils) {
       ctx.fillRect(snake.path[i].x * blocksize, snake.path[i].y * blocksize,
                    blocksize, blocksize);
     }
+
+    // Draw level no.
+    ctx.fillStyle = "rgb(0, 0, 0)";
+    ctx.font = "14pt SilkscreenNormal, Arial, sans-serif";
+    ctx.textAlign = "right";
+    ctx.textBaseline = "bottom";
+    ctx.fillText("Level: " + (game.levelidx + 1), canvas.width - blocksize,
+                 canvas.height + 1);
 
     // Pause message?
     if (game.paused) {
