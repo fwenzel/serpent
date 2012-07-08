@@ -208,7 +208,7 @@ require(['jquery', 'assets', 'utils'], function($, assets, utils) {
     // Pause message?
     if (game.paused) {
       ctx.fillStyle = "rgb(0, 0, 0)";
-      ctx.font = "bold 24px Helvetica";
+      ctx.font = "36pt SilkscreenNormal, Arial, sans-serif";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText("PAUSE", canvas.width / 2, canvas.height / 2);

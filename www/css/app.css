@@ -1,9 +1,22 @@
 @import url('html5-boilerplate.css');
 
+@font-face {
+    font-family: 'SilkscreenNormal';
+    src: url('../fonts/slkscr-webfont.woff') format('woff'),
+         url('../fonts/slkscr-webfont.ttf') format('truetype'),
+         url('../fonts/slkscr-webfont.svg#SilkscreenNormal') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
 h2 {
     font-size: 90%;
 }
 
 canvas {
     background-color: #efefef;
+}
+
+#commands {
+    font: 12pt 'SilkscreenNormal', Arial, sans-serif;
 }
