@@ -1,12 +1,16 @@
 define(function() {
   // Asset types
-  var levels = [
-    {src: 'img/level1.png'},
-    {src: 'img/level2.png',
-     start: {x: 4, y: 15},
-     dir: 3},
-    {src: 'img/level3.png'}
-  ];
+  var levels = [{
+    src: 'img/level1.png',
+    points: 15
+  }, {
+    src: 'img/level2.png',
+    start: {x: 4, y: 15},
+    dir: 3,
+    points: 25
+  }, {
+    src: 'img/level3.png'
+  }];
   var images = {
     food: {src: 'img/apple.png'}
   };

@@ -17,8 +17,11 @@ require(['jquery', 'assets', 'utils'], function($, assets, utils) {
     width: 32,
     height: 32,
     // Paused?
-    paused: false
+    paused: false,
+    // Level index
+    levelidx: 0
   };
+  var level; // Shortcut to this level's metadata.
 
   // Create the canvas
   var canvas = document.createElement("canvas");
@@ -40,13 +43,13 @@ require(['jquery', 'assets', 'utils'], function($, assets, utils) {
   function Snake() {
     this.speed = 5; // movement in blocks per second
     this.length = 8; // snake length
-    this.dir = 2; // direction
-    this.path = [{x: game.width / 2, y: game.height / 2}]; // Track snake's movement
+    this.dir = level.dir || 2; // direction
+    this.path = [level.start || {x: game.width / 2, y: game.height / 2}]; // Track snake's movement
 
     this.since_last_update = 0; // Time since last update
     this.dirchange = false; // direction change in progress?
   }
-  var snake = new Snake();
+  var snake;
 
   // Foodz
   function Food() {
@@ -67,7 +70,7 @@ require(['jquery', 'assets', 'utils'], function($, assets, utils) {
 
   // Collision detection
   function is_collision(pos) {
-    var paths = [snake.path, assets.levels[0].walls];
+    var paths = [snake.path, level.walls];
     for (var p in paths) {
       var path = paths[p];
       for (var i in path) {
@@ -105,6 +108,8 @@ require(['jquery', 'assets', 'utils'], function($, assets, utils) {
 
   // Reset game to original state
   function reset() {
+    // NB: Does not reset to level 0
+    level = assets.levels[game.levelidx];
     snake = new Snake();
     food = [];
   };
@@ -150,8 +155,15 @@ require(['jquery', 'assets', 'utils'], function($, assets, utils) {
     for (var i in food) {
       if (food[i].x == new_pos.x && food[i].y == new_pos.y) {
         snake.length += food[i].val;
-        food.splice(i, 1); // Remove this.
-        break;
+        if ('points' in level && snake.length >= level.points) {
+          // Level up!
+          game.levelidx += 1;
+          reset();
+          return;
+        } else {
+          food.splice(i, 1); // Remove this.
+          break;
+        }
       }
     }
 
@@ -171,11 +183,11 @@ require(['jquery', 'assets', 'utils'], function($, assets, utils) {
     // Empty the canvas.
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if ('loaded' in assets.levels[0]) {
+    if ('loaded' in level) {
       ctx.fillStyle = "#777";
-      for (var i in assets.levels[0].walls) {
-        ctx.fillRect(assets.levels[0].walls[i].x * blocksize,
-                     assets.levels[0].walls[i].y * blocksize,
+      for (var i in level.walls) {
+        ctx.fillRect(level.walls[i].x * blocksize,
+                     level.walls[i].y * blocksize,
                      blocksize, blocksize);
       }
     }
