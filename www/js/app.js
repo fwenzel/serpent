@@ -1,9 +1,9 @@
 require.config({
-    paths: {'jquery': ['lib/jquery']}
+    baseUrl: 'js/lib'
 });
 var global = this;
 
-require(['jquery', 'utils'], function($, utils) {
+require(['jquery', 'assets', 'utils'], function($, assets, utils) {
   // Setup requestAnimationFrame
   requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
                           window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
@@ -30,10 +30,11 @@ require(['jquery', 'utils'], function($, utils) {
     var thisimg = i;
     var img = new Image();
     img.onload = function() {
+      game.images[thisimg] = this;
       delete game.images_toload[thisimg];
-      game.images[thisimg] = img;
     };
     img.src = game.images_toload[thisimg];
+    game.images_toload[thisimg] = img;
   }
 
   // Create the canvas
@@ -62,14 +63,6 @@ require(['jquery', 'utils'], function($, utils) {
     this.since_last_update = 0; // Time since last update
     this.dirchange = false; // direction change in progress?
   }
-  Snake.prototype.in_path = function(pos) {
-    // Is this position somewhere in our path already?
-    for (var i in this.path) {
-      var p = this.path[i];
-      if (pos.x == p.x && pos.y == p.y) return true;
-    }
-    return false;
-  }
   var snake = new Snake();
 
   // Foodz
@@ -80,13 +73,26 @@ require(['jquery', 'utils'], function($, utils) {
     do {
       this.x = utils.getRandomInt(0, game.width - 1);
       this.y = utils.getRandomInt(0, game.height - 1);
-    } while (snake.in_path(this));
+    } while (is_collision(this));
   }
   Food.prototype.render = function() {
     if (!('food' in game.images)) return;
     ctx.drawImage(game.images['food'], this.x * blocksize, this.y * blocksize);
   }
   var food = []; // List of food items on the screen.
+
+
+  // Collision detection
+  function is_collision(pos) {
+    var paths = [snake.path, assets.levels[0].walls];
+    for (var p in paths) {
+      var path = paths[p];
+      for (var i in path) {
+        if (pos.x == path[i].x && pos.y == path[i].y) return true;
+      }
+    }
+    return false;
+  }
 
 
   // Handle keyboard controls
@@ -151,9 +157,7 @@ require(['jquery', 'utils'], function($, utils) {
     }
 
     // Did we run into a wall or ourselves?
-    if (new_pos.x < 0 || new_pos.x >= game.width ||
-        new_pos.y < 0 || new_pos.y >= game.height ||
-        snake.in_path(new_pos)) {
+    if (is_collision(new_pos)) {
       console.log('zomg');
       reset();
       return;
@@ -183,6 +187,15 @@ require(['jquery', 'utils'], function($, utils) {
   function render() {
     // Empty the canvas.
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if ('loaded' in assets.levels[0]) {
+      ctx.fillStyle = "#777";
+      for (var i in assets.levels[0].walls) {
+        ctx.fillRect(assets.levels[0].walls[i].x * blocksize,
+                     assets.levels[0].walls[i].y * blocksize,
+                     blocksize, blocksize);
+      }
+    }
 
     // Draw food items
     for (var i in food) food[i].render();
