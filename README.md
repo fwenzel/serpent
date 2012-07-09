@@ -5,6 +5,14 @@ Serpent is an open web version of the game ["snake"](http://en.wikipedia.org/wik
 This game is built on top of the [WebGameStub template](https://github.com/mozilla/WebGameStub). Check out their github page and README for more information.
 
 
+## Wanna play?
+The game is up and running at:
+http://fwenzel.github.com/serpent
+
+... and if you want to install it as an open web app (on Firefox 16+):
+http://fwenzel.github.com/serpent/install.html
+
+
 ## Acknowledgments
 Thanks to:
 
