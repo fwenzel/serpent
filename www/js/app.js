@@ -3,7 +3,7 @@ require.config({
 });
 var global = this;
 
-require(['jquery', 'assets', 'utils'], function($, assets, utils) {
+require(['assets', 'utils'], function(assets, utils) {
   // Setup requestAnimationFrame
   requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
                           window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
