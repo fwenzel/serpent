@@ -6,8 +6,8 @@ var global = this;
 require(['assets', 'utils'], function(assets, utils) {
   // Setup requestAnimationFrame
   requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
-                          window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-  cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
+                          window.webkitRequestAnimationFrame || window.msRequestAnimationFrame ||
+                          function (callback) { setTimeout(callback, 1000/60); return 1; };
   var animationFrameId;
 
   // Global game metadata
