@@ -107,6 +107,35 @@ require(['assets', 'utils'], function(assets, utils) {
   }, false);
 
 
+  // Handle click events.
+  document.getElementById('game').getElementsByTagName(
+    'canvas')[0].addEventListener('click', function(e) {
+
+    // No other commands while paused or while direction change already in progress.
+    if (game.paused || snake.dirchange) return;
+
+    e.preventDefault();
+
+    snake.dirchange = true;
+    if ([1, 3].indexOf(snake.dir) !== -1) { // up or down
+      var relX = e.pageX - e.target.offsetLeft;
+      if (relX > canvas.offsetWidth / 2) { // right
+        snake.dir = 2;
+      } else { // left
+        snake.dir = 4;
+      }
+
+    } else { // Left or right
+      var relY = e.pageY - e.target.offsetTop;
+      if (relY > canvas.offsetHeight / 2) { // down
+        snake.dir = 3;
+      } else { // up
+        snake.dir = 1;
+      }
+    }
+  }, false);
+
+
   // Reset game to original state
   function reset() {
     // NB: Does not reset to level 0
