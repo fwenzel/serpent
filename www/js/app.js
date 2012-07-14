@@ -3,52 +3,25 @@ require.config({
 });
 var global = this;
 
-require(['assets', 'utils'], function(assets, utils) {
+require(['game', 'assets', 'utils'], function(game, assets, utils) {
   // Setup requestAnimationFrame
   requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
                           window.webkitRequestAnimationFrame || window.msRequestAnimationFrame ||
                           function (callback) { setTimeout(callback, 1000/60); return 1; };
   var animationFrameId;
 
-  // Global game metadata
-  var blocksize = 14;
-  function Game() {
-    // Block width and height (square)
-    this.height = 32;
-    this.width = 32;
-    // Background frame
-    this.offset = {x: (assets.images['c64'].width - blocksize * this.width) / 2,
-                   y: 90};
-    // Paused?
-    this.paused = false;
-    // Level index
-    this.levelidx = 0;
-  }
-  var game = new Game();
-  var level; // Shortcut to this level's metadata.
+  // Shortcuts
+  var level; // This level's metadata.
+  var blocksize = game.blocksize;
 
   // Create the canvas
   var canvas = document.createElement("canvas");
+  canvas.style.backgroundColor = '#95e0ff';
   var ctx = canvas.getContext("2d");
   canvas.width = assets.images.c64.width;
   canvas.height = assets.images.c64.height;
   document.getElementById('game').appendChild(canvas);
 
-  // Directions
-  var dirs = {
-    38: 1, // up
-    39: 2, // right
-    40: 3, // down
-    37: 4 // left
-  };
-
-  // Coordinate helpers: Turns game coordinate into canvas coordinate.
-  function cx(pos) {
-    return game.offset.x + pos * blocksize;
-  }
-  function cy(pos) {
-    return game.offset.y + pos * blocksize;
-  }
 
   // Game objects
   // Player
@@ -62,6 +35,13 @@ require(['assets', 'utils'], function(assets, utils) {
     this.since_last_update = 0; // Time since last update
     this.dirchange = false; // direction change in progress?
   }
+  Snake.prototype.render = function() {
+    ctx.fillStyle = "#1b6cfc";
+    for (var i in this.path) {
+      ctx.fillRect(game.cx(this.path[i].x), game.cy(this.path[i].y),
+                   blocksize, blocksize);
+    }
+  };
   var snake;
 
   // Foodz
@@ -76,7 +56,7 @@ require(['assets', 'utils'], function(assets, utils) {
   }
   Food.prototype.render = function() {
     if (!('loaded' in assets.images['food'])) return;
-    ctx.drawImage(assets.images['food'].img, cx(this.x), cy(this.y));
+    ctx.drawImage(assets.images['food'].img, game.cx(this.x), game.cy(this.y));
   }
   var food = []; // List of food items on the screen.
 
@@ -106,16 +86,16 @@ require(['assets', 'utils'], function(assets, utils) {
     if (game.paused || snake.dirchange) return;
 
     // Handle direction changes.
-    if (!(e.keyCode in dirs)) return;
+    if (!(e.keyCode in game.dirs)) return;
     e.preventDefault();
 
     // Avoid opposite directions
     var opposites = {1: 3, 2: 4, 3: 1, 4: 2};
-    if (dirs[e.keyCode] == opposites[snake.dir]) return;
+    if (game.dirs[e.keyCode] == opposites[snake.dir]) return;
 
     // Change direction of snake
     snake.dirchange = true;
-    snake.dir = dirs[e.keyCode];
+    snake.dir = game.dirs[e.keyCode];
   }, false);
 
 
@@ -233,11 +213,16 @@ require(['assets', 'utils'], function(assets, utils) {
     // Empty the canvas.
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    // Frame
+    if ('loaded' in assets.images.c64) {
+      ctx.drawImage(assets.images['c64'].img, 0, 0);
+    }
+
     // Draw walls
     if ('loaded' in level) {
-      ctx.fillStyle = "#95e0ff";
+      ctx.fillStyle = "#1b6cfc";
       for (var i in level.walls) {
-        ctx.fillRect(cx(level.walls[i].x), cy(level.walls[i].y),
+        ctx.fillRect(game.cx(level.walls[i].x), game.cy(level.walls[i].y),
                      blocksize, blocksize);
       }
     }
@@ -257,11 +242,7 @@ require(['assets', 'utils'], function(assets, utils) {
     for (var i in food) food[i].render();
 
     // Draw snake
-    ctx.fillStyle = "#95e0ff";
-    for (var i in snake.path) {
-      ctx.fillRect(cx(snake.path[i].x), cy(snake.path[i].y),
-                   blocksize, blocksize);
-    }
+    snake.render();
 
     // Draw level no.
     ctx.fillStyle = "rgb(0, 0, 0)";
@@ -278,11 +259,6 @@ require(['assets', 'utils'], function(assets, utils) {
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText("PAUSE", canvas.width / 2, canvas.height / 2);
-    }
-
-    // Frame
-    if ('loaded' in assets.images.c64) {
-      ctx.drawImage(assets.images['c64'].img, 0, 0);
     }
   };
 

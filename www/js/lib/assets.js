@@ -1,3 +1,5 @@
+/** Asset loader: Images and stuff. */
+
 define(function() {
   // Asset types
   var levels = [{
@@ -21,7 +23,8 @@ define(function() {
     food: {src: 'img/apple.png'},
     snake: {src: 'img/snake.png'},
     c64: {src: 'img/c64.gif',
-          width: 803, height: 631}
+          width: 803, height: 631,
+          offsetY: 93}
   };
 
 
