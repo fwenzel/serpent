@@ -16,9 +16,12 @@ define(function() {
     start: {x: 20, y: 20},
     dir: 1
   }];
+
   var images = {
     food: {src: 'img/apple.png'},
-    snake: {src: 'img/snake.png'}
+    snake: {src: 'img/snake.png'},
+    c64: {src: 'img/c64.gif',
+          width: 803, height: 631}
   };
 
 
