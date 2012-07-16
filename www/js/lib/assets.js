@@ -22,7 +22,7 @@ define(function() {
   var images = {
     food: {src: 'img/apple.png'},
     snake: {src: 'img/snake.png'},
-    c64: {src: 'img/c64.gif',
+    c64: {src: 'img/c64.png',
           width: 803, height: 631,
           offsetY: 93}
   };
