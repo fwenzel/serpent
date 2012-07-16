@@ -1,0 +1,40 @@
+CACHE MANIFEST
+# Jow78hR9QrVDF7iTsAsUkNt/WVo=
+
+CACHE:
+404.html
+crossdomain.xml
+css/app.css
+fonts/Kottke Silkscreen License.txt
+fonts/slkscr-webfont.svg
+fonts/slkscr-webfont.ttf
+fonts/slkscr-webfont.woff
+humans.txt
+img/.DS_Store
+img/apple.png
+img/default.png
+img/default@2x.png
+img/level1.png
+img/level2.png
+img/level3.png
+img/level4.png
+img/snake.png
+img/snake128.png
+img/snake256.png
+img/snake32.png
+img/snake48.png
+img/snake64.png
+img/touch-icon.png
+img/touch-icon@2x.png
+index.html
+install.html
+js/app.js
+js/lib/modernizr-2.5.3.min.js
+js/lib/require.js
+manifest.webapp
+
+# catch-all for anything else
+NETWORK:
+*
+http://*
+https://*

@@ -28,6 +28,7 @@ require(['assets', 'utils'], function(assets, utils) {
   var ctx = canvas.getContext("2d");
   canvas.width = game.width * blocksize;
   canvas.height = game.height * blocksize;
+  canvas.id = 'game-canvas';
   document.getElementById('game').appendChild(canvas);
 
   // Directions
