@@ -1,16 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html manifest="manifest.appcache">
   <head>
     <meta charset="utf-8">
 
     <title>Serpent</title>
     <meta name="description" content="">
 
-    <!-- Mobile viewport optimized: h5bp.com/viewport -->
-    <meta name="viewport" content="width=device-width">
+    <!-- iOS-specific meta information; for homescreen web app capabilities -->
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1; user-scalable=0;">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!-- iPhone -->
+    <link rel="apple-touch-icon" sizes="57x57" href="img/touch-icon.png">
+    <link rel="apple-touch-startup-image" media="(device-width: 320px)" href="img/default.png">
+    <!-- Retina iPhone -->
+    <link rel="apple-touch-icon" sizes="114x114" href="img/touch-icon@2x.png">
+    <link rel="apple-touch-startup-image" media="(device-width: 320px) and (-webkit-device-pixel-ratio: 2)" href="img/default@2x.png">
 
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
-    <link rel="shortcut icon" type="image/png" href="img/snake.png" />
+    <link rel="shortcut icon" type="image/png" href="img/snake.png">
 
     <!-- If you intend to use volo's build command, do not add any
          other CSS here and @import it in app.css. It will be inlined
