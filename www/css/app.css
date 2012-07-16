@@ -13,7 +13,15 @@ h2 {
     font-size: 90%;
 }
 
-canvas {
+#game {
+    margin: 10px;
+}
+
+#game, #commands {
+    text-align: center;
+}
+
+#game-canvas {
     background-color: #efefef;
     max-width: 100%;
     max-height: 100%;
