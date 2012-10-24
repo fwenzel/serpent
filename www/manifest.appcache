@@ -27,10 +27,12 @@ img/touch-icon@2x.png
 index.html
 install.html
 js/app.js
-js/lib/assets.js
-js/lib/modernizr-2.5.3.min.js
+js/init.js
+js/assets.js
+js/config.js
+js/utils.js
 js/lib/require.js
-js/lib/utils.js
+js/lib/zepto.js
 manifest.webapp
 
 # catch-all for anything else

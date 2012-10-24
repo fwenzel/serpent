@@ -9,19 +9,43 @@
     font-style: normal;
 }
 
+body {
+    max-width: 532px;
+    margin: 0 auto;
+    font: 14pt 'SilkscreenNormal', Arial, sans-serif;
+}
+
 h2 {
     font-size: 90%;
 }
 
-#game {
+#gamebox {
     margin: 10px;
 }
 
-#game, #commands {
+#config, #game, #commands {
     text-align: center;
     -webkit-tap-highlight-color: transparent;
     -webkit-user-select: none;
     -webkit-touch-callout: none;
+}
+
+#config {
+    background: url(../img/snake128.png) right top no-repeat;
+}
+@media (max-width: 480px) {
+    #config {
+        background: url(../img/snake64.png) right 10px top no-repeat;
+    }
+}
+
+#game,
+.running #config {
+    display: none;
+}
+
+.running #game {
+    display: block;
 }
 
 #game-canvas {
@@ -33,10 +57,54 @@ h2 {
     -webkit-touch-callout: none;
 }
 
-#commands {
-    font: 12pt 'SilkscreenNormal', Arial, sans-serif;
+#commands ul,
+#commands li {
+    padding: 0;
 }
 
 #commands li {
     list-style: none;
+}
+
+a.button {
+    -moz-box-shadow:inset 0px 1px 0px 0px #a4e271;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #a4e271;
+    box-shadow:inset 0px 1px 0px 0px #a4e271;
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #7fd97b), color-stop(1, #296920) );
+    background:-moz-linear-gradient( center top, #7fd97b 5%, #296920 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#7fd97b', endColorstr='#296920');
+    background-color:#7fd97b;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
+    border:1px solid #74b807;
+    display:inline-block;
+    color:#ffffff;
+    font-family:arial;
+    font-size:15px;
+    font-weight:bold;
+    padding:6px 24px;
+    text-decoration:none;
+    text-shadow:1px 1px 0px #528009;
+}
+a.button:hover {
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #296920), color-stop(1, #7fd97b) );
+    background:-moz-linear-gradient( center top, #296920 5%, #7fd97b 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#296920', endColorstr='#7fd97b');
+    background-color:#296920;
+}
+.button:active {
+    color: inherit;
+    position:relative;
+    top:1px;
+}
+
+#speed {
+    font-size: 16pt;
+    font-weight: bold;
+    padding: 0 .5em;
+}
+
+#start-game {
+    margin-top: 2em;
 }

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 
     <title>Serpent</title>
-    <meta name="description" content="">
+    <meta name="description" content="A snake-style open web game.">
 
     <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1; user-scalable=0;">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -20,7 +20,19 @@
   </head>
   <body>
 
-    <div id="game"></div>
+    <section id="config">
+      <h1>serpent</h1>
+      <h2>choose speed</h2>
+      <div>
+        <a class="button changespeed" data-delta="-1">-</a>
+        <span id="speed">5</span>
+        <a class="button changespeed" data-delta="1">+</a>
+      </div>
+      <a class="button" id="start-game">Start</a>
+    </section>
+    <section id="game">
+      <div id="gamebox"></div>
+    </section>
     <div id="commands">
         <h2>Commands:</h2>
         <ul>
@@ -28,7 +40,6 @@
             <li><strong>P</strong> &mdash; Pause</li>
         </ul>
     </div>
-
 
     <script type="text/javascript" data-main="js/init.js" src="js/lib/require.js"></script>
   </body>

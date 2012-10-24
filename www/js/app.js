@@ -6,6 +6,7 @@ define(function(require) {
   var $ = require('zepto');
   var assets = require('./assets');
   var utils = require('./utils');
+  var config = require('./config');
 
   var document = window.document;
 
@@ -32,6 +33,7 @@ define(function(require) {
     levelidx: 0
   };
   var level; // Shortcut to this level's metadata.
+  var then; // Timestamp of last animation frame
 
   // Create the canvas
   var canvas = document.createElement('canvas');
@@ -39,7 +41,7 @@ define(function(require) {
   canvas.width = game.width * blocksize;
   canvas.height = game.height * blocksize;
   canvas.id = 'game-canvas';
-  document.getElementById('game').appendChild(canvas);
+  $('#gamebox').append(canvas);
 
   // Directions
   var dirs = {
@@ -55,7 +57,7 @@ define(function(require) {
 
   // Player
   function Snake() {
-    this.speed = 5; // movement in blocks per second
+    this.speed = config.getSpeed(); // movement in blocks per second
     this.length = 8; // snake length
     this.dir = level.dir || 2; // direction
     this.path = [level.start || {x: game.width / 2, y: game.height / 2}]; // Track snake's movement
@@ -306,17 +308,20 @@ define(function(require) {
     }
   }
 
-  // Pause when leaving the screen.
-  window.addEventListener('blur', function() {
-    pause(true);
-  });
+  // Init: Hook up event handlers and such.
+  function init() {
+    // Pause when leaving the screen.
+    $(window).blur(function() {
+      pause(true);
+    });
 
-  // Handle keyboard controls
-  window.addEventListener('keydown', moveSnakeOnKeyPress, false);
+    // Handle keyboard controls
+    $(window).keydown(moveSnakeOnKeyPress);
 
-  // Handle click and touch events.
-  canvas.addEventListener('touchStart', moveSnakeOnTouch, false);
-  canvas.addEventListener('click', moveSnakeOnTouch, false);
+    // Handle click and touch events.
+    $(canvas).bind('touchStart', moveSnakeOnTouch);
+    $(canvas).click(moveSnakeOnTouch);
+  }
 
   // The main game loop
   function main() {
@@ -333,11 +338,16 @@ define(function(require) {
   }
 
   // Let's play this game!
-  reset();
-  var then = Date.now();
+  $('#start-game').click(function(e) {
+    e.preventDefault();
 
-  // Execute as soon as possible
-  main();
+    $('body').addClass('running');
+
+    init();
+    reset();
+    then = Date.now();
+    main();
+  });
 
 // End require.js
 });
