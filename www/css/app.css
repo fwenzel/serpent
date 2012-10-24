@@ -36,3 +36,7 @@ h2 {
 #commands {
     font: 12pt 'SilkscreenNormal', Arial, sans-serif;
 }
+
+#commands ul {
+    list-style: none;
+}
