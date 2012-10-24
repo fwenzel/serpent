@@ -30,6 +30,7 @@ require(['assets', 'utils'], function(assets, utils) {
   canvas.height = game.height * blocksize;
   canvas.id = 'game-canvas';
   document.getElementById('game').appendChild(canvas);
+  // canvas = document.getElementById('game').getElementsByTagName('canvas')[0];
 
   // Directions
   var dirs = {
@@ -69,7 +70,6 @@ require(['assets', 'utils'], function(assets, utils) {
   }
   var food = []; // List of food items on the screen.
 
-
   // Collision detection
   function is_collision(pos) {
     var paths = [snake.path, level.walls];
@@ -82,36 +82,7 @@ require(['assets', 'utils'], function(assets, utils) {
     return false;
   }
 
-
-  // Handle keyboard controls
-  addEventListener("keydown", function(e) {
-    // Pause / unpause?
-    if (e.keyCode == 80) { // "p"
-      pause();
-      return;
-    }
-
-    // No other commands while paused or while direction change already in progress.
-    if (game.paused || snake.dirchange) return;
-
-    // Handle direction changes.
-    if (!(e.keyCode in dirs)) return;
-    e.preventDefault();
-
-    // Avoid opposite directions
-    var opposites = {1: 3, 2: 4, 3: 1, 4: 2};
-    if (dirs[e.keyCode] == opposites[snake.dir]) return;
-
-    // Change direction of snake
-    snake.dirchange = true;
-    snake.dir = dirs[e.keyCode];
-  }, false);
-
-
-  // Handle click events.
-  document.getElementById('game').getElementsByTagName(
-    'canvas')[0].addEventListener('click', function(e) {
-
+  function moveSnake(e) {
     // No other commands while paused or while direction change already in progress.
     if (game.paused || snake.dirchange) return;
 
@@ -134,8 +105,7 @@ require(['assets', 'utils'], function(assets, utils) {
         snake.dir = 1;
       }
     }
-  }, false);
-
+  }
 
   // Reset game to original state
   function reset() {
@@ -270,7 +240,6 @@ require(['assets', 'utils'], function(assets, utils) {
     }
   };
 
-
   // Pause the game.
   function pause(force) {
     if (animationFrameId || force) { // Pause
@@ -282,9 +251,37 @@ require(['assets', 'utils'], function(assets, utils) {
       animationFrameId = requestAnimationFrame(main);
     }
   };
+
   // Pause when leaving the screen.
   window.addEventListener('blur', function() { pause(true); });
 
+  // Handle keyboard controls
+  addEventListener("keydown", function(e) {
+    // Pause / unpause?
+    if (e.keyCode == 80) { // "p"
+      pause();
+      return;
+    }
+
+    // No other commands while paused or while direction change already in progress.
+    if (game.paused || snake.dirchange) return;
+
+    // Handle direction changes.
+    if (!(e.keyCode in dirs)) return;
+    e.preventDefault();
+
+    // Avoid opposite directions
+    var opposites = {1: 3, 2: 4, 3: 1, 4: 2};
+    if (dirs[e.keyCode] == opposites[snake.dir]) return;
+
+    // Change direction of snake
+    snake.dirchange = true;
+    snake.dir = dirs[e.keyCode];
+  }, false);
+
+  // Handle click and touch events.
+  canvas.addEventListener('touchStart', moveSnake, false);
+  canvas.addEventListener('click', moveSnake, false);
 
   // The main game loop
   function main() {
