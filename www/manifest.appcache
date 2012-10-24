@@ -5,12 +5,10 @@ CACHE:
 404.html
 crossdomain.xml
 css/app.css
-fonts/Kottke Silkscreen License.txt
+css/html5-boilerplate.css
 fonts/slkscr-webfont.svg
 fonts/slkscr-webfont.ttf
 fonts/slkscr-webfont.woff
-humans.txt
-img/.DS_Store
 img/apple.png
 img/default.png
 img/default@2x.png
@@ -29,8 +27,10 @@ img/touch-icon@2x.png
 index.html
 install.html
 js/app.js
+js/lib/assets.js
 js/lib/modernizr-2.5.3.min.js
 js/lib/require.js
+js/lib/utils.js
 manifest.webapp
 
 # catch-all for anything else
