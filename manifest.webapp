@@ -1,0 +1,19 @@
+{
+  "version": "0.1",
+  "name": "Serpent",
+  "description": "An Open Web App version of the classic game 'snake'.",
+  "launch_path": "/serpent/",
+  "icons": {
+    "16": "/serpent/img/snake.png",
+    "32": "/serpent/img/snake32.png",
+    "48": "/serpent/img/snake48.png",
+    "64": "/serpent/img/snake64.png",
+    "128": "/serpent/img/snake128.png",
+    "256": "/serpent/img/snake256.png"
+  },
+  "developer": {
+    "name": "Fred Wenzel",
+    "url": "http://fredericiana.com"
+  },
+  "installs_allowed_from": ["*"]
+}
