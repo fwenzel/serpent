@@ -1,14 +1,15 @@
 /*jshint forin:false, sub:true */
 "use strict";
 
-require.config({
-    baseUrl: 'js/lib'
-});
+define(function(require) {
+  // Libraries
+  var $ = require('zepto');
+  var assets = require('./assets');
+  var utils = require('./utils');
 
-require(['assets', 'utils'], function(assets, utils) {
   var document = window.document;
 
-  // Setup requestAnimationFrame
+  // Set up requestAnimationFrame
   var requestAnimationFrame = window.requestAnimationFrame ||
                               window.mozRequestAnimationFrame ||
                               window.webkitRequestAnimationFrame ||
@@ -19,7 +20,7 @@ require(['assets', 'utils'], function(assets, utils) {
                               };
   var animationFrameId;
 
-  // Global game metadata
+  /** Global game metadata */
   var blocksize = 16;
   var game = {
     // Block width and height
