@@ -1,13 +1,22 @@
+/*jshint forin:false, sub:true */
+"use strict";
+
 require.config({
     baseUrl: 'js/lib'
 });
-var global = this;
 
 require(['assets', 'utils'], function(assets, utils) {
+  var document = window.document;
+
   // Setup requestAnimationFrame
-  requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
-                          window.webkitRequestAnimationFrame || window.msRequestAnimationFrame ||
-                          function (callback) { setTimeout(callback, 1000/60); return 1; };
+  var requestAnimationFrame = window.requestAnimationFrame ||
+                              window.mozRequestAnimationFrame ||
+                              window.webkitRequestAnimationFrame ||
+                              window.msRequestAnimationFrame ||
+                              function (callback) {
+                                setTimeout(callback, 1000/60);
+                                return 1;
+                              };
   var animationFrameId;
 
   // Global game metadata
@@ -24,8 +33,8 @@ require(['assets', 'utils'], function(assets, utils) {
   var level; // Shortcut to this level's metadata.
 
   // Create the canvas
-  var canvas = document.createElement("canvas");
-  var ctx = canvas.getContext("2d");
+  var canvas = document.createElement('canvas');
+  var ctx = canvas.getContext('2d');
   canvas.width = game.width * blocksize;
   canvas.height = game.height * blocksize;
   canvas.id = 'game-canvas';
@@ -39,7 +48,10 @@ require(['assets', 'utils'], function(assets, utils) {
     37: 4 // left
   };
 
-  // Game objects
+  /**
+    Game objects
+  */
+
   // Player
   function Snake() {
     this.speed = 5; // movement in blocks per second
@@ -64,11 +76,13 @@ require(['assets', 'utils'], function(assets, utils) {
     } while (is_collision(this));
   }
   Food.prototype.render = function() {
-    if (!('loaded' in assets.images['food'])) return;
+    if (!('loaded' in assets.images['food'])) {
+      return;
+    }
+
     ctx.drawImage(assets.images['food'].img, this.x * blocksize, this.y * blocksize);
   }
   var food = []; // List of food items on the screen.
-
 
   // Collision detection
   function is_collision(pos) {
@@ -76,44 +90,50 @@ require(['assets', 'utils'], function(assets, utils) {
     for (var p in paths) {
       var path = paths[p];
       for (var i in path) {
-        if (pos.x == path[i].x && pos.y == path[i].y) return true;
+        if (pos.x === path[i].x && pos.y === path[i].y) {
+          return true;
+        }
       }
     }
     return false;
   }
 
-
-  // Handle keyboard controls
-  addEventListener("keydown", function(e) {
+  function moveSnakeOnKeyPress(e) {
     // Pause / unpause?
-    if (e.keyCode == 80) { // "p"
+    if (e.keyCode === 80) { // "p"
       pause();
       return;
     }
 
     // No other commands while paused or while direction change already in progress.
-    if (game.paused || snake.dirchange) return;
+    if (game.paused || snake.dirchange) {
+      return;
+    }
 
     // Handle direction changes.
-    if (!(e.keyCode in dirs)) return;
+    if (!(e.keyCode in dirs)) {
+      return;
+    }
+
     e.preventDefault();
 
-    // Avoid opposite directions
+    // Avoid opposite directions.
+    // This is probably faster than (snake.dir + 2 > 4 ? snake.dir - 2 : snake.dir + 2)
     var opposites = {1: 3, 2: 4, 3: 1, 4: 2};
-    if (dirs[e.keyCode] == opposites[snake.dir]) return;
+    if (dirs[e.keyCode] === opposites[snake.dir]) {
+      return;
+    }
 
     // Change direction of snake
     snake.dirchange = true;
     snake.dir = dirs[e.keyCode];
-  }, false);
+  }
 
-
-  // Handle click events.
-  document.getElementById('game').getElementsByTagName(
-    'canvas')[0].addEventListener('click', function(e) {
-
+  function moveSnakeOnTouch(e) {
     // No other commands while paused or while direction change already in progress.
-    if (game.paused || snake.dirchange) return;
+    if (game.paused || snake.dirchange) {
+      return;
+    }
 
     e.preventDefault();
 
@@ -134,8 +154,7 @@ require(['assets', 'utils'], function(assets, utils) {
         snake.dir = 1;
       }
     }
-  }, false);
-
+  }
 
   // Reset game to original state
   function reset() {
@@ -143,13 +162,15 @@ require(['assets', 'utils'], function(assets, utils) {
     level = assets.levels[game.levelidx];
     snake = new Snake();
     food = [];
-  };
+  }
 
 
   // Update game objects
   function update(modifier) {
     snake.since_last_update += modifier;
-    if (snake.since_last_update < 1000 / snake.speed) return;  // no update due yet
+    if (snake.since_last_update < 1000 / snake.speed) {
+          return; // no update due yet
+        }
 
     // Update due
     snake.since_last_update -= 1000 / snake.speed;
@@ -161,7 +182,7 @@ require(['assets', 'utils'], function(assets, utils) {
     food = food.filter(function(item) { return item.ttl > 0; })
 
     // Add some food? (nom). But no more than 3.
-    if (food.length < 3 && Math.random() < (.08 / (food.length + 1))) {
+    if (food.length < 3 && Math.random() < (0.08 / (food.length + 1))) {
       food.push(new Food());
     }
 
@@ -181,7 +202,7 @@ require(['assets', 'utils'], function(assets, utils) {
     // Did we run into a wall or ourselves?
     if (is_collision(new_pos)) {
       snake.lives -= 1;
-      if (snake.lives == 0) {
+      if (snake.lives === 0) {
         // Game over!
         game.levelidx = 0;
         snake = null;
@@ -192,7 +213,7 @@ require(['assets', 'utils'], function(assets, utils) {
 
     // Nom nom nom
     for (var i in food) {
-      if (food[i].x == new_pos.x && food[i].y == new_pos.y) {
+      if (food[i].x === new_pos.x && food[i].y === new_pos.y) {
         snake.length += food[i].val;
         if ('points' in level && snake.length >= level.points) {
           // Level up!
@@ -214,7 +235,7 @@ require(['assets', 'utils'], function(assets, utils) {
 
     // Allow next direction change.
     snake.dirchange = false;
-  };
+  }
 
 
   // Draw everything
@@ -223,7 +244,7 @@ require(['assets', 'utils'], function(assets, utils) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     if ('loaded' in level) {
-      ctx.fillStyle = "#777";
+      ctx.fillStyle = '#777';
       for (var i in level.walls) {
         ctx.fillRect(level.walls[i].x * blocksize,
                      level.walls[i].y * blocksize,
@@ -243,33 +264,34 @@ require(['assets', 'utils'], function(assets, utils) {
     }
 
     // Draw food items
-    for (var i in food) food[i].render();
+    for (var i in food) {
+      food[i].render();
+    }
 
     // Draw snake
-    ctx.fillStyle = "rgb(200, 0, 0)";
+    ctx.fillStyle = 'rgb(200, 0, 0)';
     for (var i in snake.path) {
       ctx.fillRect(snake.path[i].x * blocksize, snake.path[i].y * blocksize,
                    blocksize, blocksize);
     }
 
     // Draw level no.
-    ctx.fillStyle = "rgb(0, 0, 0)";
-    ctx.font = "14pt SilkscreenNormal, Arial, sans-serif";
-    ctx.textAlign = "right";
-    ctx.textBaseline = "bottom";
-    ctx.fillText("Level: " + (game.levelidx + 1), canvas.width - blocksize,
+    ctx.fillStyle = 'rgb(0, 0, 0)';
+    ctx.font = '14pt SilkscreenNormal, Arial, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('Level: ' + (game.levelidx + 1), canvas.width - blocksize,
                  canvas.height + 1);
 
     // Pause message?
     if (game.paused) {
-      ctx.fillStyle = "rgb(0, 0, 0)";
-      ctx.font = "36pt SilkscreenNormal, Arial, sans-serif";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText("PAUSE", canvas.width / 2, canvas.height / 2);
+      ctx.fillStyle = 'rgb(0, 0, 0)';
+      ctx.font = '36pt SilkscreenNormal, Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('PAUSE', canvas.width / 2, canvas.height / 2);
     }
-  };
-
+  }
 
   // Pause the game.
   function pause(force) {
@@ -281,10 +303,19 @@ require(['assets', 'utils'], function(assets, utils) {
       then = Date.now(); // Reset.
       animationFrameId = requestAnimationFrame(main);
     }
-  };
-  // Pause when leaving the screen.
-  window.addEventListener('blur', function() { pause(true); });
+  }
 
+  // Pause when leaving the screen.
+  window.addEventListener('blur', function() {
+    pause(true);
+  });
+
+  // Handle keyboard controls
+  window.addEventListener('keydown', moveSnakeOnKeyPress, false);
+
+  // Handle click and touch events.
+  canvas.addEventListener('touchStart', moveSnakeOnTouch, false);
+  canvas.addEventListener('click', moveSnakeOnTouch, false);
 
   // The main game loop
   function main() {
@@ -298,11 +329,12 @@ require(['assets', 'utils'], function(assets, utils) {
     if (!game.paused) {
       animationFrameId = requestAnimationFrame(main);
     }
-  };
+  }
 
   // Let's play this game!
   reset();
   var then = Date.now();
+
   // Execute as soon as possible
   main();
 
