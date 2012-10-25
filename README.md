@@ -10,7 +10,7 @@ Check out their github page and README for more information.
 The game is up and running at:
 http://fwenzel.github.com/serpent
 
-... and if you want to install it as an open web app (on Firefox 16+):
+... and if you want to install it as an open web app (on Firefox 16+, Firefox OS, or Firefox on Android):
 http://fwenzel.github.com/serpent/install.html
 
 
@@ -24,3 +24,4 @@ Thanks to:
 
 * Jason Kottke for making the font [Silkscreen](http://www.fontsquirrel.com/fonts/Silkscreen).
 * Martin Berube for the [Snake logo](http://iconsmash.com/Icon/FreeIcon/5978/snake) (freeware)
+* The awesome [contributors](https://github.com/fwenzel/serpent/graphs/contributors)
