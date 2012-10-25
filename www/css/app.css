@@ -37,6 +37,6 @@ h2 {
     font: 12pt 'SilkscreenNormal', Arial, sans-serif;
 }
 
-#commands ul {
+#commands li {
     list-style: none;
 }
