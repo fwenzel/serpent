@@ -8,10 +8,10 @@ Check out their github page and README for more information.
 
 ## Wanna play?
 The game is up and running at:
-http://fwenzel.github.com/serpent
+http://fwenzel.github.io/serpent
 
 ... and if you want to install it as an open web app (on Firefox 16+, Firefox OS, or Firefox on Android):
-http://fwenzel.github.com/serpent/install.html
+http://fwenzel.github.io/serpent/install.html
 
 
 ## Wanna contribute?
